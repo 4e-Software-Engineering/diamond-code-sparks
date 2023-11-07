@@ -4,6 +4,11 @@ import './Program_Page.less';
 function ProgramPage() {
   return (
     <div className="my-programs">
+      <div className="header">
+        <button className="back-button"></button>
+        <h1>My Programs</h1>
+        <div className="menu"></div>
+      </div>
       
       <div className="programs-list">
         <div className="program new-program">
