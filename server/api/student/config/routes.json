@@ -63,6 +63,14 @@
       "config": {
         "policies": ["global::isClassroomManager", "global::hasStudentsClassroom"]
       }
+    },
+    {
+      "method": "PUT",
+      "path": "/students/sessions/:id",
+      "handler": "student.sessions",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }

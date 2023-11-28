@@ -2,7 +2,7 @@ import { Button, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../components/NavBar/NavBar';
-import { getStudentClassroom } from '../../Utils/requests';
+import { getStudent, getStudentClassroom } from '../../Utils/requests';
 import './Student.less';
 import ShareProgram from './SharePrograms';
 
@@ -17,6 +17,11 @@ function Student() {
   const [view_sharedFrom, setSharedFrom] = useState(false);
   const [view_Gallery, setGallery] = useState(false);
   const [view_menu, setMenu] = useState(true);
+  const [name, setName] = useState('');
+  let student_id = JSON.parse(sessionStorage.getItem('user'));
+  getStudent(student_id).then((res) => {
+    setName(res.data.name);
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,7 +98,7 @@ function Student() {
       {view_menu && (
       <div>
         <div className='Welcome'>
-          <h1 className="Hello">Hello, StudentName!</h1>
+          <h1 className="Hello">Hello, {name}!</h1>
         </div>
         <div className='dbSection'>
           <div className="section_label">
@@ -136,10 +141,10 @@ function Student() {
             <i className='fa fa-paper-plane' style={{ marginRight: '10px' }}/>
             Share Program
           </button>
-          <button id="sharedWithYou" onClick={() => viewSharedF(true)}>
+          {/*<button id="sharedWithYou" onClick={() => viewSharedF(true)}>
             <i className='fa fa-envelope' style={{ marginRight: '10px' }}/>
             Shared With You
-          </button>
+      </button>*/}
           <button id="viewGallery" onClick={() => viewGallery(true)}>
             <i className='fa fa-globe' style={{ marginRight: '10px' }}/>
             View Gallery
@@ -217,14 +222,14 @@ function Student() {
         <ShareProgram/>
       </div>
       )}
-      {/*add shared with you page*/}
+      {/*add shared with you page
       {view_sharedFrom && (
       <div id='activity-container'>
         <div id='header'>
           <div>Shared Programs</div>
         </div>
       </div>
-      )}
+      )}*/}
       {/* add View Gallery */}
       {view_Gallery && (
       <div id='activity-container'>

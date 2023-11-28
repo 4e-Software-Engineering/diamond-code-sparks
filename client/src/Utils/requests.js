@@ -146,6 +146,23 @@ export const getStudent = async (id) =>
     error: 'Student info could not be retrieved.',
   });
 
+export const getStudentSessions = async (id) =>
+  makeRequest({
+    method: GET,
+    path: `${server}/students/${id}/sessions`,
+    auth: true,
+    error: 'Student session info could not be retrieved.',
+  });
+
+export const getStudentSessionLesson = async (id, session) =>
+  makeRequest({
+    method: GET,
+    path: `${server}/students/${id}/${session}/lesson_module`,
+    auth: true,
+    error: 'Student session info could not be retrieved.',
+  });
+
+
 export const postJoin = async (code, ids) =>
   makeRequest({
     method: POST,
@@ -313,6 +330,27 @@ export const addStudent = async (name, character, classroom) =>
     error: 'Failed to add student.',
   });
 
+export const setSessionsToStudent = async (id, sessions) =>
+  makeRequest({
+    method: PUT,
+    path: `${server}/students/sessions/${id}`,
+    data: {
+      sessions: sessions,
+    },
+    auth: true,
+    error: 'Failed to update Session to student.',
+  });
+
+export const setStudentsToSession = async (session, students) =>
+  makeRequest({
+    method: PUT,
+    path: `${server}/sessions/${session}`,
+    data: {
+      students: students,
+    },
+    auth: true,
+    error: 'Failed to update Student to session.',
+  });
 export const addStudents = async (students, classroom) =>
   makeRequest({
     method: POST,
