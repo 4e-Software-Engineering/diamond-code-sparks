@@ -886,6 +886,12 @@
           },
           "activity_template": {
             "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "shared_with": {
+            "type": "string"
           }
         }
       },
@@ -929,6 +935,12 @@
             }
           },
           "activity_template": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "shared_with": {
             "type": "string"
           },
           "created_by": {

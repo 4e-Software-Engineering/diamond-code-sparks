@@ -46,6 +46,12 @@
     "activity_template": {
       "type": "text",
       "required": false
+    },
+    "owner": {
+      "type": "string"
+    },
+    "shared_with": {
+      "type": "text"
     }
   }
 }

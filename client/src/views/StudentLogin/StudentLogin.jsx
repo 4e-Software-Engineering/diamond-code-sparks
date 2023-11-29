@@ -71,8 +71,11 @@ export default function StudentLogin() {
     if (!fails.includes(true)) {
       const res = await postJoin(joinCode, ids);
       if (res.data) {
+        const { jwt, students } = res.data;
+        const loginName = students.map(student => student.name).join(', ');
         setUserSession(res.data.jwt, JSON.stringify(res.data.students));
-        navigate('/student');
+
+        navigate('/student', { state: { loginName } });
       } else {
         message.error('Name or Animal not selected.');
       }

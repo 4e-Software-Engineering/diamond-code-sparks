@@ -2,12 +2,15 @@ import { Button, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../components/NavBar/NavBar';
-import { getStudentClassroom } from '../../Utils/requests';
+import { getActivities, getStudent, getStudentClassroom } from '../../Utils/requests';
 import './Student.less';
 import ShareProgram from './SharePrograms';
 
 function Student() {
+  const [username, setName] = useState('');
   const [learningStandard, setLessonModule] = useState({});
+  const [programs, initPrograms] = useState({});
+  const [shared, initShared] = useState({});
   const [view_activity, setActivity] = useState(false);
   const [view_class, setClass] = useState(false);
   const [view_other_lesson, setLesson] = useState(false);
@@ -17,23 +20,85 @@ function Student() {
   const [view_sharedFrom, setSharedFrom] = useState(false);
   const [view_Gallery, setGallery] = useState(false);
   const [view_menu, setMenu] = useState(true);
+  const [safe_mode, setMode] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getStudentClassroom();
-        if (res.data) {
-          if (res.data.lesson_module) {
-            setLessonModule(res.data.lesson_module);
-          }
-        } else {
-          message.error(res.err);
+  function getActivityByName(usersData, targetName) {
+    const filteredUsers = Object.values(usersData).filter(user => {
+      const fullName = user.owner || ''; // Handle cases where name is undefined
+      return fullName.toUpperCase() === targetName.toUpperCase();
+    });
+  
+    return filteredUsers;
+  }
+  
+  function findSharedActivities(jsonData, targetName) {
+    const matchingUsers = [];
+
+    function searchForName(obj, currentUserId) {
+      for (const key in obj) {
+        if (key === 'shared_with' && (obj[key] || '').includes(targetName)) {
+          matchingUsers.push(obj);
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          searchForName(obj[key], currentUserId);
         }
-      } catch {}
-    };
-    fetchData();
-  }, []);
+      }
+    }
+
+    for (const userId in jsonData) {
+      searchForName(jsonData[userId], userId);
+    }
+
+    return matchingUsers;
+  }
+
+  useEffect(() => {
+  const fetchData = async (studentId) => {
+    try {
+      // Fetch student data and set the username
+      const studentRes = await getStudent(studentId);
+      let str = studentRes.data.name;
+      str = str.substring(0, str.length - 1);
+      console.log('name: ' + str);
+      setName(str);
+
+      // Fetch classroom data
+      const activity_res = await getStudentClassroom();
+      if (activity_res.data) {
+        if (activity_res.data.lesson_module) {
+          setLessonModule(activity_res.data.lesson_module);
+        }
+      } else {
+        message.error(activity_res.err);
+      }
+
+      // Fetch activities and filter by username
+      const ress = await getActivities();
+      const res2 = await getActivityByName(ress.data, str);
+      console.log(res2);
+      if (res2) {
+        initPrograms(res2);
+      }
+
+      // Find shared activities and filter by username
+      const res3 = await findSharedActivities(ress.data, str);
+      console.log(res3);
+      if (res3) {
+        initShared(res3);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Get student_id from session storage
+  const studentId = JSON.parse(sessionStorage.getItem('user'));
+
+  // Check if studentId is available before calling fetchData
+  if (studentId) {
+    fetchData(studentId);
+  }
+}, []);
 
   function viewActivities(status) {
     setActivity(status);
@@ -80,8 +145,16 @@ function Student() {
     setMenu(false);
   }
 
+  function safeMode() {
+    setMode(!safe_mode);
+  }
+
   const handleSelection = (activity) => {
-    activity.lesson_module_name = learningStandard.name;
+    if (activity.owner) {
+      activity.lesson_module_name = activity.owner + ": " + activity.description;
+    } else {
+      activity.lesson_module_name = learningStandard.name;
+    }
     localStorage.setItem('my-activity', JSON.stringify(activity));
 
     navigate('/workspace');
@@ -93,7 +166,7 @@ function Student() {
       {view_menu && (
       <div>
         <div className='Welcome'>
-          <h1 className="Hello">Hello, StudentName!</h1>
+          <h1 className="Hello">Hello, {username}!</h1>
         </div>
         <div className='dbSection'>
           <div className="section_label">
@@ -206,6 +279,28 @@ function Student() {
         <div id='header'>
           <div>My Programs</div>
         </div>
+        <ul>
+          {programs ? (
+            programs
+              .sort((activity1, activity2) => activity1.number - activity2.number)
+              .map((activity) => (
+                <div
+                  key={activity.id}
+                  id='list-item-wrapper'
+                  onClick={() => handleSelection(activity)}
+                >
+                  <li>{`${activity.owner}: ${activity.description}`}</li>
+                </div>
+              ))
+          ) : (
+            <div>
+              <p>There is currently no active learning standard set.</p>
+              <p>
+                When your classroom manager selects one, it will appear here.
+              </p>
+            </div>
+          )}
+        </ul>
       </div>
       )}
       {/*add share page*/}
@@ -223,6 +318,28 @@ function Student() {
         <div id='header'>
           <div>Shared Programs</div>
         </div>
+        <ul>
+          {shared ? (
+            shared
+              .sort((activity1, activity2) => activity1.number - activity2.number)
+              .map((activity) => (
+                <div
+                  key={activity.id}
+                  id='list-item-wrapper'
+                  onClick={() => handleSelection(activity)}
+                >
+                  <li>{`${activity.owner}: ${activity.description}`}</li>
+                </div>
+              ))
+          ) : (
+            <div>
+              <p>There is currently no active learning standard set.</p>
+              <p>
+                When your classroom manager selects one, it will appear here.
+              </p>
+            </div>
+          )}
+        </ul>
       </div>
       )}
       {/* add View Gallery */}

@@ -14,9 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-
-    "x-generation-date": "11/06/2023 5:25:38 AM"
-
+    "x-generation-date": "11/28/2023 2:51:48 PM"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -11875,6 +11873,12 @@
           },
           "activity_template": {
             "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "shared_with": {
+            "type": "string"
           }
         }
       },
@@ -11918,6 +11922,12 @@
             }
           },
           "activity_template": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "shared_with": {
             "type": "string"
           },
           "created_by": {
@@ -12699,6 +12709,12 @@
                 "activity_template": {
                   "type": "string"
                 },
+                "owner": {
+                  "type": "string"
+                },
+                "shared_with": {
+                  "type": "string"
+                },
                 "created_by": {
                   "type": "string"
                 },
@@ -12833,6 +12849,12 @@
                   }
                 },
                 "activity_template": {
+                  "type": "string"
+                },
+                "owner": {
+                  "type": "string"
+                },
+                "shared_with": {
                   "type": "string"
                 },
                 "created_by": {
@@ -13170,6 +13192,12 @@
                 }
               },
               "activity_template": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "shared_with": {
                 "type": "string"
               },
               "created_by": {
@@ -14247,6 +14275,12 @@
                 }
               },
               "activity_template": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "shared_with": {
                 "type": "string"
               },
               "created_by": {
