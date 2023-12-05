@@ -168,6 +168,21 @@ export const createActivity = async (activity, learningStandard) =>
     auth: true,
     error: 'Login failed.',
   });
+  
+export const studentCreateActivity = async (name, shared, description) =>
+makeRequest({
+  method: POST,
+  path: `${server}/activities`,
+  data: {
+    owner: name,
+    number: 1,
+    shared_with: shared,
+    description: description,
+    template: '<xml xmlns="http://www.w3.org/1999/xhtml"><block type="serial_setup" id="7tC_r/3t[5+RCfH0i7(O" x="92" y="35"><field name="SERIAL_ID">Serial</field><field name="SPEED">9600</field></block><block type="io_digitalwrite" id="f%OKM;J6YkfIgeLb0%XH" x="99" y="125"><field name="PIN">2</field><value name="STATE"><block type="io_highlow" id="TQoEk-~qAiHL^%m;LE.^"><field name="STATE">HIGH</field></block></value></block></xml>)',
+  },
+  auth: true,
+  error: 'Login failed.',
+});
 
 export const setEnrollmentStatus = async (id, enrolled) =>
   makeRequest({

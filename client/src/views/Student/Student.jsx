@@ -2,7 +2,7 @@ import { Button, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../components/NavBar/NavBar';
-import { getActivities, getStudent, getStudentClassroom } from '../../Utils/requests';
+import { getActivities, deleteActivity, studentCreateActivity, getStudent, getStudents, getStudentClassroom } from '../../Utils/requests';
 import './Student.less';
 import ShareProgram from './SharePrograms';
 
@@ -21,6 +21,9 @@ function Student() {
   const [view_Gallery, setGallery] = useState(false);
   const [view_menu, setMenu] = useState(true);
   const [safe_mode, setMode] = useState(false);
+  const [studentList, setStudentList] = useState([]);
+  const [selectedOption, setSelectedOption] = useState('');
+  const [description, setDescription] = useState('Project Name');
   const navigate = useNavigate();
 
   function getActivityByName(usersData, targetName) {
@@ -31,7 +34,38 @@ function Student() {
   
     return filteredUsers;
   }
+
+  const createAct = () => {
+    studentCreateActivity(username, selectedOption, description);
+    console.log('Create button clicked!');
+  };
+
+  function modifyNamesList(namesString, nameToModify) {
+    nameToModify = nameToModify.substring(0, nameToModify.length - 1);
+    if (nameToModify.includes(username)) {
+      return "";
+    }
+
+    let modifiedString = "";
   
+    if (namesString.includes(nameToModify)) {
+      modifiedString = namesString.replace(new RegExp(nameToModify, 'g'), '').trim();
+    } else {
+      modifiedString = `${namesString} ${nameToModify}`;
+    }
+  
+    return modifiedString;
+  }
+  
+  const handleOptionChange = (event) => {
+    setSelectedOption(modifyNamesList(selectedOption, event.target.value));
+  };
+  
+
+  const handleInputChange = (event) => {
+    setDescription(event.target.value);
+  };
+
   function findSharedActivities(jsonData, targetName) {
     const matchingUsers = [];
 
@@ -61,6 +95,11 @@ function Student() {
       str = str.substring(0, str.length - 1);
       console.log('name: ' + str);
       setName(str);
+
+      // Fetch the classroom list
+      const sList = await getStudents(studentRes.data.classroom.code);
+      setStudentList(sList.data.map(item => item.name));
+      console.log("data:\n\n", sList.data.map(item => item.name));
 
       // Fetch classroom data
       const activity_res = await getStudentClassroom();
@@ -158,6 +197,12 @@ function Student() {
     localStorage.setItem('my-activity', JSON.stringify(activity));
 
     navigate('/workspace');
+  };
+
+  const handleDeletion = (activity) => {
+    deleteActivity(activity.id);
+    const updatedData = programs.filter(item => item.id !== activity.id);
+    initPrograms(updatedData);
   };
 
   return (
@@ -271,6 +316,34 @@ function Student() {
         <div id='header'>
           <div>Make Program</div>
         </div>
+        <div>
+          <label htmlFor="dropdown">Select an option:</label>
+          <select
+            id="dropdown"
+            value={selectedOption}
+            onChange={handleOptionChange}
+            style={{ backgroundColor: selectedOption ? '#cfe8fc' : 'white' }}
+          >
+            <option value="" disabled>Select an option</option>
+            {studentList.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
+          </select>
+          <p>Selected option: {selectedOption}</p>
+      </div>
+        <div>
+        <label htmlFor="description">Description:</label>
+        <input
+          type="text"
+          id="description"
+          value={description}
+          onChange={handleInputChange}
+        />
+        <p>Current Description: {description}</p>
+      </div>
+        <div>
+          <button onClick={createAct}>Create</button>
+        </div>
       </div>
       )}
       {/*add My Programs Page*/}
@@ -282,16 +355,20 @@ function Student() {
         <ul>
           {programs ? (
             programs
-              .sort((activity1, activity2) => activity1.number - activity2.number)
-              .map((activity) => (
-                <div
-                  key={activity.id}
-                  id='list-item-wrapper'
-                  onClick={() => handleSelection(activity)}
-                >
-                  <li>{`${activity.owner}: ${activity.description}`}</li>
-                </div>
-              ))
+            .sort((activity1, activity2) => activity1.number - activity2.number)
+            .map((activity) => (
+              <div key={activity.id} id="list-item-wrapper">
+                <li>
+                  {`${activity.owner}: ${activity.description}          `}
+                  <button onClick={() => handleSelection(activity)}>
+                    <i className='fas fa-check' style={{ marginRight: '10px' }}/>
+                  </button>
+                  <button onClick={() => handleDeletion(activity)}>
+                    <i className='fas fa-trash' style={{ marginRight: '10px' }}/>
+                  </button>
+                </li>
+              </div>
+            ))
           ) : (
             <div>
               <p>There is currently no active learning standard set.</p>
