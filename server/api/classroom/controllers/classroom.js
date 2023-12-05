@@ -54,7 +54,6 @@ module.exports = {
           id: student.id,
           name: student.name,
           character: student.character,
-          secondaryPassword: student.secondaryPassword
         };
       });
     }

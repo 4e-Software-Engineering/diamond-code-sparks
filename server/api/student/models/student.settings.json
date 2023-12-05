@@ -34,9 +34,6 @@
     },
     "last_logged_in": {
       "type": "datetime"
-    },
-    "secondaryPassword": {
-      "type": "string"
     }
   }
 }

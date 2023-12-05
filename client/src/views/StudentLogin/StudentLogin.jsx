@@ -53,17 +53,20 @@ export default function StudentLogin() {
             const student = studentList.find(student => student.id === id);
             if (student) {
                 authList.push(student);
-                if (student.character === animals[index] || student.secondaryPassword === passwords[index]) {
-                    fails[index] = false;
-                } else {
+                if (student.character !== animals[index]) {
                     fails[index] = true;
+                }
+                else if (student.secondaryPassword && student.secondaryPassword !== passwords[index]) {
+                    fails[index] = true;
+                } else {
+                    fails[index] = false;
                 }
             }
         });
 
         setAuthFail(fails);
         return !fails.includes(true);
-    };s
+    };
 
     const handleLogin = async () => {
         let ids = studentIds.slice(0, numForms);

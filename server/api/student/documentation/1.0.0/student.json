@@ -784,9 +784,6 @@
           "last_logged_in": {
             "type": "string",
             "format": "date-time"
-          },
-          "secondaryPassword": {
-            "type": "string"
           }
         }
       },
@@ -817,9 +814,6 @@
           "last_logged_in": {
             "type": "string",
             "format": "date-time"
-          },
-          "secondaryPassword": {
-            "type": "string"
           },
           "created_by": {
             "type": "string"
