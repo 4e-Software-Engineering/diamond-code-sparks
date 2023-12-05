@@ -53,16 +53,13 @@ function Student() {
   function viewMProgram(status) {
     setMakeProgram(status);
     setMenu(false);
-  }
-
-  function viewMProgram(status) {
-    setMakeProgram(status);
-    setMenu(false);
+    navigate('/sandbox');
   }
 
   function viewProgram(status) {
     setPrograms(status);
     setMenu(false);
+    navigate('/program_page');
   }
 
   function viewShare(status) {
