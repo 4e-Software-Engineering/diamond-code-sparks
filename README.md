@@ -1,4 +1,12 @@
-# CaSMM
+
+
+
+## Project 15 (4e)
+### Student Personal/School Account Dashboards and Parental Controls
+#### By: 
+PM: Jean-Luc Choiseul
+SM: Varun Singh
+Ruhi Reddy, Julian Stennett, Ethan Trosper, Sam Dedio
 
 > Computation and Science Modeling through Making
 
